@@ -6,7 +6,7 @@ import { seedAbsences, seedChangeLogs, seedClients, seedNotifications, seedSched
 import { addMinutes, generateSchedule, generateWeekDates, timeToMinutes } from "@/lib/scheduler";
 import { ChangeLog, Client, NotificationLog, Role, Schedule, SchedulerMode, Staff, StaffAbsence, SystemSettings, User } from "@/lib/types";
 
-type ViewKey = "dashboard" | "scheduler" | "clients" | "staff" | "absences" | "automation" | "notifications" | "history";
+type ViewKey = "dashboard" | "scheduler" | "clients" | "staff" | "absences" | "automation" | "notifications" | "history" | "help";
 type DragTarget = { date: string; time: string } | null;
 type ResizeState = { scheduleId: string; edge: "start" | "end"; startY: number; originalStartTime: string; originalEndTime: string } | null;
 
@@ -21,6 +21,78 @@ const warningLabel = (warnings: string[]) => warnings.length ? warnings.join(" /
 const cardTone = (status: Schedule["status"]) => status === "confirmed" ? "border-sky-200 bg-sky-50" : "border-amber-200 bg-amber-50";
 const dayColumnTone = (dayIndex: number) => dayIndex % 2 === 0 ? "bg-slate-50/70" : "bg-emerald-50/45";
 const overlaps = (aStart: string, aEnd: string, bStart: string, bEnd: string) => timeToMinutes(aStart) < timeToMinutes(bEnd) && timeToMinutes(bStart) < timeToMinutes(aEnd);
+
+const helpSections = [
+  {
+    title: "ログイン",
+    image: "/help/login.svg",
+    caption: "ログイン画面のイメージ",
+    items: [
+      "ログイン画面で ID とパスワードを入力してログインします。",
+      "サンプルアカウント: admin / admin123、office / office123、viewer / viewer123"
+    ]
+  },
+  {
+    title: "データ取込",
+    image: "/help/import.svg",
+    caption: "利用者マスタと月間予定CSV取込のイメージ",
+    items: [
+      "利用者マスタまたはスタッフマスタから CSV/Excel 取込を実行できます。",
+      "利用者・日付・開始時間・終了時間・職員名１ を含む CSV は月間予定として自動判定されます。",
+      "取込時に未登録の利用者やスタッフはマスタへ自動補完されます。"
+    ]
+  },
+  {
+    title: "週次スケジュール",
+    image: "/help/scheduler.svg",
+    caption: "週次スケジュール画面のイメージ",
+    items: [
+      "左メニューの週指定で表示週を変更できます。",
+      "予定カードはドラッグで別曜日・別時間・別スタッフ列へ移動できます。",
+      "予定カードの上下端をドラッグすると 5 分単位で時間調整できます。",
+      "短い予定はマウスオーバーで詳細ポップアップを表示できます。"
+    ]
+  },
+  {
+    title: "自動割当",
+    image: "/help/autoassign.svg",
+    caption: "自動割当と結果確認のイメージ",
+    items: [
+      "左メニューの 自動割当 で未割当予定へ担当候補を割り当てます。",
+      "勤務時間外、休暇時間帯、重複予定、NG スタッフは自動割当されません。"
+    ]
+  },
+  {
+    title: "画面の見方",
+    image: "/help/scheduler.svg",
+    caption: "固定ヘッダーとスタッフ列の見え方",
+    items: [
+      "曜日ごとに背景色が少し変わります。",
+      "日付・曜日・スタッフ名・時刻はスクロールしても固定表示されます。",
+      "その日の予定がないスタッフ列は自動で非表示になります。",
+      "スタッフ見出しには件数、合計分数、最初と最後の時刻が表示されます。"
+    ]
+  },
+  {
+    title: "出力と確認",
+    image: "/help/autoassign.svg",
+    caption: "結果確認と出力のイメージ",
+    items: [
+      "Excel出力 で表示中の週次予定を出力できます。",
+      "通知 で送信状態を確認できます。",
+      "履歴 で変更履歴を確認できます。"
+    ]
+  },
+  {
+    title: "困ったとき",
+    image: "/help/import.svg",
+    caption: "取込・表示確認のイメージ",
+    items: [
+      "自動割当されない場合は、勤務時間、休暇、重複、NG 設定を確認してください。",
+      "取込後に見えない場合は、表示中の週と CSV の日付を確認してください。"
+    ]
+  }
+];
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -106,7 +178,8 @@ export default function Home() {
     { key: "absences", label: "休暇管理", roles: ["admin", "office"] },
     { key: "automation", label: "自動割当", roles: ["admin", "office"] },
     { key: "notifications", label: "通知", roles: ["admin", "office"] },
-    { key: "history", label: "履歴", roles: ["admin", "office", "viewer"] }
+    { key: "history", label: "履歴", roles: ["admin", "office", "viewer"] },
+    { key: "help", label: "HELP", roles: ["admin", "office", "viewer"] }
   ];
 
   const handleLogin = () => {
@@ -693,11 +766,46 @@ export default function Home() {
           {view === "automation" && <div className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]"><div className="panel p-5"><h3 className="text-lg font-bold">自動割当実行</h3><div className="mt-4 space-y-3"><select className="field" value={schedulerMode} onChange={(e) => setSchedulerMode(e.target.value as SchedulerMode)}><option value="new">新規生成</option><option value="rebalance">再編成</option><option value="absence">欠勤再割当</option></select><input className="field" type="number" value={settings.standardTravelMinutes} onChange={(e) => setSettings((prev) => ({ ...prev, standardTravelMinutes: Number(e.target.value) }))} /><button className="btn-primary w-full" onClick={runAutoAssign}>実行</button></div></div><div className="panel p-5"><h3 className="text-lg font-bold">結果サマリー</h3><p className="mt-3 text-sm">{resultSummary}</p><div className="mt-4 grid gap-3">{schedules.filter((s) => !s.staffId || s.warningCodes.length > 0).map((s) => { const client = clients.find((c) => c.id === s.clientId); const staff = staffs.find((st) => st.id === s.staffId); return <div key={s.id} className="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm"><p className="font-semibold">{client?.name}</p><p>{s.scheduleDate} {s.startTime}-{s.endTime}</p><p>担当: {staff?.name ?? "未割当"}</p><p className="text-xs">{warningLabel(s.warningCodes)}</p><div className="mt-3 flex gap-2"><button className="btn-secondary" onClick={() => cycleStaff(s.id)}>代替候補</button><button className="btn-primary" onClick={() => confirmSchedule(s.id)}>確定</button></div></div>; })}</div></div></div>}
           {view === "notifications" && <div className="panel p-5"><div className="flex items-center justify-between"><h3 className="text-lg font-bold">通知管理</h3><button className="btn-primary" onClick={() => setNotifications((prev) => prev.map((n) => ({ ...n, sendStatus: "sent", sentAt: new Date().toISOString() })))}>一括送信</button></div><div className="mt-4 overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="text-slate-500"><tr><th className="px-3 py-2">対象</th><th className="px-3 py-2">内容</th><th className="px-3 py-2">状態</th></tr></thead><tbody>{notifications.map((n) => <tr key={n.id} className="border-t border-slate-100"><td className="px-3 py-3">{staffs.find((s) => s.id === n.targetStaffId)?.name ?? n.targetStaffId}</td><td className="px-3 py-3">{n.messageBody}</td><td className="px-3 py-3">{n.sendStatus}</td></tr>)}</tbody></table></div></div>}
           {view === "history" && <div className="panel p-5"><h3 className="text-lg font-bold">変更履歴</h3><div className="mt-4 overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="text-slate-500"><tr><th className="px-3 py-2">日時</th><th className="px-3 py-2">種別</th><th className="px-3 py-2">変更者</th><th className="px-3 py-2">理由</th></tr></thead><tbody>{changeLogs.map((l) => <tr key={l.id} className="border-t border-slate-100"><td className="px-3 py-3">{l.createdAt}</td><td className="px-3 py-3">{l.changeType}</td><td className="px-3 py-3">{l.changedBy}</td><td className="px-3 py-3">{l.reason}</td></tr>)}</tbody></table></div></div>}
-        </section>
+          {view === "help" && (
+            <div className="space-y-4">
+              <div className="panel p-5">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Help</p>
+                <h3 className="mt-2 text-2xl font-bold">操作ガイド</h3>
+                <p className="mt-3 text-sm text-slate-600">ログイン、取込、自動割当、週次スケジュールの基本操作をここで確認できます。</p>
+              </div>
+              <div className="grid gap-4 xl:grid-cols-2">
+                {helpSections.map((section) => (
+                  <div key={section.title} className="panel overflow-hidden p-5">
+                    <h4 className="text-lg font-bold">{section.title}</h4>
+                    <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                      <img src={section.image} alt={section.caption} className="w-full object-cover" />
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500">{section.caption}</p>
+                    <div className="mt-3 space-y-2 text-sm text-slate-600">
+                      {section.items.map((item) => (
+                        <p key={item} className="leading-6">{item}</p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="panel p-5 text-sm text-slate-600">
+                <p>本番環境: https://ai-sift.vercel.app</p>
+                <p className="mt-1">GitHub: https://github.com/hatkow/ai-sift</p>
+              </div>
+            </div>
+          )}        </section>
       </div>
     </main>
   );
 }
+
+
+
+
+
+
+
 
 
 

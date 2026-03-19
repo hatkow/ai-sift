@@ -1,0 +1,18 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#eef5f7"/>
+  <rect x="40" y="40" width="720" height="400" rx="28" fill="#ffffff" stroke="#d7e3ea"/>
+  <rect x="72" y="84" width="256" height="276" rx="24" fill="#ffffff" stroke="#d7e3ea"/>
+  <text x="100" y="128" fill="#16324f" font-size="32" font-weight="700" font-family="Arial">自動割当実行</text>
+  <rect x="100" y="168" width="200" height="48" rx="16" fill="#f7fafc" stroke="#d7e3ea"/>
+  <rect x="100" y="234" width="200" height="48" rx="16" fill="#f7fafc" stroke="#d7e3ea"/>
+  <rect x="100" y="304" width="200" height="56" rx="18" fill="#0f9d6c"/>
+  <text x="156" y="337" fill="#ffffff" font-size="26" font-weight="700" font-family="Arial">実行</text>
+  <rect x="360" y="84" width="360" height="276" rx="24" fill="#ffffff" stroke="#d7e3ea"/>
+  <text x="390" y="128" fill="#16324f" font-size="32" font-weight="700" font-family="Arial">結果サマリー</text>
+  <rect x="390" y="160" width="300" height="74" rx="18" fill="#fff3f3" stroke="#f2c3c3"/>
+  <text x="414" y="196" fill="#16324f" font-size="24" font-weight="700" font-family="Arial">未割当や警告予定を表示</text>
+  <text x="414" y="224" fill="#b23b3b" font-size="18" font-family="Arial">勤務時間外 / 休暇 / 重複 など</text>
+  <rect x="390" y="252" width="300" height="74" rx="18" fill="#eef9f4" stroke="#bfe4ce"/>
+  <text x="414" y="288" fill="#16324f" font-size="24" font-weight="700" font-family="Arial">代替候補を確認</text>
+  <text x="414" y="316" fill="#425466" font-size="18" font-family="Arial">必要に応じて確定へ進む</text>
+</svg>

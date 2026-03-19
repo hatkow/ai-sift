@@ -1,0 +1,14 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#eef5f7"/>
+  <rect x="40" y="40" width="720" height="400" rx="28" fill="#ffffff" stroke="#d7e3ea"/>
+  <rect x="40" y="40" width="300" height="400" rx="28" fill="#16324f"/>
+  <text x="80" y="110" fill="#9fe3c7" font-size="22" font-family="Arial">Neo Vision</text>
+  <text x="80" y="170" fill="#ffffff" font-size="40" font-weight="700" font-family="Arial">訪問看護向け</text>
+  <text x="80" y="220" fill="#ffffff" font-size="40" font-weight="700" font-family="Arial">スケジューラー</text>
+  <rect x="410" y="120" width="280" height="54" rx="18" fill="#f7fafc" stroke="#d7e3ea"/>
+  <rect x="410" y="200" width="280" height="54" rx="18" fill="#f7fafc" stroke="#d7e3ea"/>
+  <rect x="410" y="290" width="280" height="60" rx="20" fill="#0f9d6c"/>
+  <text x="440" y="156" fill="#6b7d90" font-size="22" font-family="Arial">admin</text>
+  <text x="440" y="236" fill="#6b7d90" font-size="22" font-family="Arial">••••••••</text>
+  <text x="505" y="329" fill="#ffffff" font-size="28" font-weight="700" font-family="Arial">ログイン</text>
+</svg>
